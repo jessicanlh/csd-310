@@ -7,7 +7,7 @@ def create_connection():
         connection = mysql.connector.connect(
             user= "movies_user",
             password= "popcorn",
-            host= "127.0.0.1",
+            host= "localhost",
             database= "movies",
             raise_on_warnings= True
         )

@@ -5,8 +5,8 @@ def create_connection():
 
     try:
         connection = mysql.connector.connect(
-            user= "movies_user",
-            password= "popcorn",
+            user= "root",
+            password= "Copper!12",
             host= "localhost",
             database= "movies",
             raise_on_warnings= True
@@ -14,7 +14,7 @@ def create_connection():
         if connection.is_connected():
             print("Connected to the database.")
             return connection
-    except Error as e:
+    except OSError as e:
         print(f"Error connecting to MySQL database: {e}")
         return None
 
@@ -24,7 +24,7 @@ def execute_query(connection, query):
         cursor.execute(query)
         result = cursor.fetchall()
         return result
-    except Error as e:
+    except OSError as e:
         print(f"Error executing query: {e}")
         return None
 
@@ -36,7 +36,7 @@ def main():
 
     #query 1: Select all fields for the studio table
     print("\n1. Query to select all fields for the studio table.")
-    query1 = "SELECT FROM studio;"
+    query1 = "SELECT*FROM studio;"
     result1 = execute_query(connection, query1)
     print("Studio Table Data:")
     for row in result1:
@@ -44,7 +44,7 @@ def main():
 
     #Query 2: Select all fields for the genre table
     print("\n2. Query to select all fields for the movies table.")
-    query2 = "SELECT FROM genre;"
+    query2 = "SELECT*FROM genre;"
     result2 = execute_query(connection, query2)
     print("Genre Table Data:")
     for row in result2:
@@ -69,7 +69,7 @@ def main():
     result4 = execute_query(connection, query4)
     print("Films grouped by director:")
     for row in result4:
-        print(f"-{row['director']}: {row['film']}")
+        print(f"-{row['film_director']}: {row['films']}")
 
     #close the connection
     connection.close()

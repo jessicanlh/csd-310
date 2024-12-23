@@ -11,8 +11,8 @@ from mysql.connector import errorcode
 from tabulate import tabulate
 
 config = {
-    "user": "root",
-    "password": "Copper!12",
+    "user": "winery_user",
+    "password": "wine",
     "host": "127.0.0.1",
     "database": "winerycase",
     "raise_on_warnings": True
@@ -48,9 +48,14 @@ try:
                   ["WineID", "Wine Name", "Type", "Stock", "Price"],
                   "Wines")
     
-    display_table("SELECT DistributorID, DistributorName, ContactInfo, SalesQuota FROM Distributors",
-                  ["DistributorID", "Distributor Name", "Contact Info", "Sales Quota"],
+    display_table("SELECT DistributorID, DistributorName, ContactInfo, TotalSold FROM Distributors",
+                  ["DistributorID", "Distributor Name", "Contact Info", "Total Sold"],
                   "Distributors")
+
+    display_table("SELECT SupplierID, ScheduledDelivery, ActualDelivery, Difference FROM Delivery",
+                  ["SupplierID", "Scheduled Delivery", "Actual Delivery", "Difference (Hours)"],
+                  "Delivery"
+    )
     
     display_table("SELECT EmployeeID, EmployeeName, Role, DepartmentID FROM Employees",
                   ["EmployeeID", "Employee Name", "Role", "DepartmentID"],
@@ -60,8 +65,8 @@ try:
                   ["TrackingID", "EmployeeID", "Q1 Hours", "Q2 Hours", "Q3 Hours", "Q4 Hours", "Total Hours"],
                   "TimeTracking")
     
-    display_table("SELECT OrderID, OrderDate, OrderStatus, DistributorID, WineID FROM Orders",
-                  ["OrderID", "Order Date", "Order Status", "DistributorID", "WineID"],
+    display_table("SELECT OrderID, OrderDate, OrderStatus, DistributorID, WineID, UnitsSold FROM Orders",
+                  ["OrderID", "Order Date", "Order Status", "DistributorID", "WineID", "Units Sold"],
                   "Orders")
 
 except mysql.connector.Error as err:
@@ -106,6 +111,24 @@ try:
             print(f"Error: Incomplete data for supplier: {supplier}")
     db.commit()
 
+# Display the data from the Suppliers Delivery table
+    cursor = db.cursor()
+    cursor.execute("SELECT SupplierID, ScheduledDelivery, ActualDelivery, Difference FROM Suppliers")
+    supplier = cursor.fetchall()
+
+    print("DISPLAYING Delivery DATA")
+    for delivery in delivery:
+        try:
+            print(f"Supplier ID: {supplier[0]}")
+            print(f"Name: {supplier[1]}")
+            print(f"Scheduled Delivery: {supplier[2]}")
+            print(f"Actual Delivery: {supplier[3]}")
+            print(f"Difference: {supplier[4]}")
+            print("-" * 20)
+        except IndexError:
+            print(f"Error: Incomplete data for supplier: {supplier}")
+    db.commit()
+
     # Display the data from the Inventory table
     cursor = db.cursor()
     cursor.execute(f"SELECT * FROM Inventory")
@@ -139,7 +162,7 @@ try:
     print("DISPLAYING Suppliers DATA")
     for Distributors in distributor:
         print(f"Distributor ID: {distributor[0]}\nName: {distributor[1]}\nContact Info: {distributor[2]}"
-              f"\nSales Quota: {distributor[3]}")
+              f"\nTotal Sold: {distributor[3]}")
     db.commit()
 
     # Display the data from the Orders table
@@ -149,7 +172,7 @@ try:
     print("DISPLAYING Suppliers DATA")
     for Orders in order:
         print(f"Order ID: {order[0]}\nOrder Date: {order[1]}\nStatus: {order[2]}"
-              f"\nDistributor ID: {order[3]}\nWine ID: {order[4]}\n")
+              f"\nDistributor ID: {order[3]}\nWine ID: {order[4]}\nUnits Sold: {order[5]}")
     db.commit()
 
     # Display the data from the Employees table
